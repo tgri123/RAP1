@@ -1,0 +1,95 @@
+managed;
+strict ( 2 );
+with draft;
+define behavior for ztg1_i_order alias Order
+implementation in class zbp_tg1_i_order unique
+persistent table ztg1_order
+draft table ztg1_dorder
+etag master LocalLastChangedAt
+lock master total etag LastChangedAt
+authorization master ( instance )
+
+{
+  field ( readonly )
+  OrderId,CustomerEmailAddress, CustomerFirstName, CustomerLastname,StatusDescription;
+
+  create ( authorization : global );
+  update;
+  delete;
+
+  draft action Edit;
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Resume;
+  draft determine action Prepare;
+
+  association _items { create; }
+  association _statuses { create; }
+
+  determination calculateOrderId on save { create; }
+
+  mapping for ztg1_order
+    {
+      CreatedAt          = created_at;
+      CreatedBy          = created_by;
+      Currency           = currency;
+      CustomerId         = customer_id;
+      LastChangedAt      = last_changed_at;
+      LastChangedBy      = last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      OrderDescription   = order_description;
+      OrderId            = order_id;
+      Status             = status;
+      TotalPrice         = total_price;
+    }
+
+}
+
+define behavior for ztg1_i_oitem alias OrderItem
+implementation in class zbp_tg1_i_oitem unique
+persistent table ztg1_oitem
+draft table ztg1_doitem
+lock dependent by _order
+authorization dependent by _order
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  field ( readonly ) OrderID, ItemID;
+  association _order;
+
+  mapping for ztg1_oitem
+    {
+      CreatedBy          = created_by;
+      Currency           = currency;
+      ItemDescription    = item_description;
+      ItemID             = item_id;
+      LastChangedBy      = last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      OrderID            = order_id;
+      UnitPrice          = unit_price;
+    }
+
+  determination calculateItemId on save { create; }
+}
+
+define behavior for ztg1_i_ostatus alias OrderStatus
+persistent table ztg1_ostatus
+draft table ztg1_dostatus
+lock dependent by _order
+authorization dependent by _order
+{
+  update;
+  delete;
+  field ( readonly ) OrderID, Status;
+  association _order;
+
+  mapping for ztg1_ostatus
+    {
+      AdditionalText = additional_text;
+      CreatedAt      = created_at;
+      OrderID        = order_id;
+      Status         = status;
+      createdBy      = created_by;
+    }
+}

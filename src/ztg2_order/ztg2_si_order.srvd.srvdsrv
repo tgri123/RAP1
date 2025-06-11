@@ -1,0 +1,5 @@
+@EndUserText.label: 'Service Definition for Order'
+define service Ztg2_SI_order {
+  expose ztg2_c_order;
+  expose ztg2_c_oitem;
+}

@@ -1,0 +1,9 @@
+@EndUserText.label: 'Service Definition Order'
+@ObjectModel.leadingEntity.name: 'ztg1_c_order'
+define service Ztg1_ui_order {
+  expose ztg1_c_order    as Orderr;
+  expose ztg1_c_oitem    as OrderItem;
+  expose ztg1_c_ostatus  as OrderStatus;
+  expose ztg1_i_customer as Customer;
+  expose I_Currency      as Currency;
+}

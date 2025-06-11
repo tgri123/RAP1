@@ -1,0 +1,93 @@
+managed implementation in class zbp_tg2_i_order unique;
+strict ( 2 );
+with draft;
+define behavior for ztg2_i_order alias _Order
+persistent table ztg2_order
+draft table ztg2_order_d
+lock master total etag LastChangedAt
+authorization master ( instance )
+//etag master <field_name>
+{
+  create ( authorization : global );
+  update;
+  delete;
+
+  association _items_test { create; with draft; }
+
+  draft action Activate optimized;
+  draft action Discard;
+  draft action Edit;
+  draft action Resume;
+  draft determine action Prepare;
+
+  field ( numbering : managed ) OrderId;
+  action ( features : instance ) setCompleted result [1] $self;
+
+  field ( readonly )
+  OrderId,
+  CreatedAt,
+  CreatedBy,
+  LastChangedAt,
+  LastChangedBy,
+  LocalLastChangedAt,
+  statusDescription,
+  customerFirstName,
+  customerLastName;
+
+  mapping for ztg2_order
+    {
+      CreatedAt          = created_at;
+      CreatedBy          = created_by;
+      Currency           = currency;
+      CustomerId         = customer_id;
+      LastChangedAt      = last_changed_at;
+      LastChangedBy      = last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      OrderDescription   = order_description;
+      OrderId            = order_id;
+      Status             = status;
+      TotalPrice         = total_price;
+    }
+
+
+}
+
+
+define behavior for ztg2_i_oitem alias _Items
+
+persistent table ztg2_oitem
+draft table ztg2_oitem_d
+lock dependent by _Order
+authorization dependent by _Order
+
+{
+  update;
+  delete;
+  association _Order;
+
+  field ( numbering : managed ) ItemId;
+
+  field ( readonly )
+  OrderId,
+  ItemId,
+  CreatedBy,
+  CreatedAt,
+  LastChangedAt,
+  LastChangedBy,
+  LocalLastChangedAt;
+
+  mapping for ztg2_oitem
+    {
+      CreatedAt          = created_at;
+      CreatedBy          = created_by;
+      Currency           = currency;
+      LastChangedAt      = last_changed_at;
+      LastChangedBy      = last_changed_by;
+      LocalLastChangedAt = local_last_changed_at;
+      OrderId            = order_id;
+      ItemId             = item_id;
+      ItemDescription    = item_description;
+      unitPrice          = unit_price;
+    }
+
+}

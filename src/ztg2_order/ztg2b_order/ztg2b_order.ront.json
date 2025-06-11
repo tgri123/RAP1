@@ -1,0 +1,10 @@
+{
+  "formatVersion": "1",
+  "header": {
+    "description": "SAP Object Type ZTG2B_ORDER",
+    "originalLanguage": "en",
+    "abapLanguageVersion": "cloudDevelopment"
+  },
+  "typeCategory": "businessObject",
+  "name": "ZTG2B_ORDER"
+}
